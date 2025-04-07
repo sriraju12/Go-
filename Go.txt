@@ -1,0 +1,1201 @@
+GO:
+
+Go is a open source programming language.
+
+* We define a main package to run the program.
+
+* We import the fmt package to help us print to the console.
+
+* The main function is the starting point of execution, and inside it, we call fmt.Println() to print
+  "Hello, World!" to the screen.
+
+Example:
+
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("hello world")
+}
+
+  NOTE:
+  you can not use single for print the values in fmt. use only double quotes or back ticks(`)
+
+  Module:
+  A module is essentially a collection of Go packages that are versioned together.
+
+  Key Files:
+  
+  * go.mod: This file defines the module and its dependencies. It's automatically created when you initialize a 
+            Go module with the go mod init command.
+
+  * go.sum: This file contains cryptographic hashes for the dependencies listed in go.mod to ensure that the
+            dependencies haven’t been tampered with.
+
+  How to Use Go Modules:
+
+  1.Initialize a Go Module:
+    
+    To create a new module for your Go project, navigate to your project directory and run:
+     
+       -> go mod init <module-name>
+
+      * <module-name> is typically the name of your module or the repository URL if you're planning to publish it.
+
+      * This will generate a go.mod file in your project directory.
+
+
+  2.Adding Dependencies:
+
+    To add a new dependency (for example, a package from a remote repository), you can simply import it in
+    your code and run:
+
+       -> go get <dependency-path>
+
+       * Go will automatically update the go.mod file to include this dependency, and it will also update
+         the go.sum file to add cryptographic hashes for verification.
+
+  3.Building the Project:
+   
+    Once you've initialized the module and added dependencies, you can build your project as usual:
+
+       -> go build
+    
+       * This will use the dependencies defined in go.mod to build your project.
+
+Basic Data Types:
+
+1.Integer types:
+                Used for whole numbers (without decimals)
+
+                Example:
+                         var amount = 1000 or var amount int = 1000
+
+2.Floating-point types:
+                       Used for numbers with decimal points.   
+
+                       Example:
+                                var amount = 1000.0 or var amount float64 = 1000.0
+
+3.Boolean Type:
+                Represents a Boolean value, which can be true or false.
+
+                Example:
+                        var isGoFun = true  or  var isGoFun bool = true
+
+4.String Type:
+              Represents a sequence of characters (text). Strings in Go are immutable, meaning their contents
+              can't be changed once created.
+
+              Example:
+                     var greeting = "Hello, Go!" or var greeting string = "Hello, Go!"
+
+
+Example:
+
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+func main() {
+
+	var investmentAmount = 1000
+	var expectedReturn = 5.5
+	var years = 10
+	var totalAmount = float64(investmentAmount) * math.Pow(1+expectedReturn/100, float64(years))
+
+	fmt.Println("Toatal Amount: $", totalAmount)
+}
+
+
+
+Null Values:
+
+ * All Go value types come with a so-called "null value" which is the value stored in a variable if no other value
+   is explicitly set.
+
+   Here's a list of the null values for the different types:
+
+    * int => 0
+
+    * float64 => 0.0
+
+    * string => "" (i.e., an empty string)
+
+    * bool => false    
+
+NOTE:
+
+* go run name_of_file to run the go application, which is used for development purpose only not for production.
+
+* in your project, if module is present then you can run the application using go run .
+
+* for converting int into float64 then you can use -> float64(int_value)
+
+
+Explicit Type Convertion(Type Assignment):
+                        
+ * var amount float64 = 1000, here it can store int and float values.                         
+
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+func main() {
+
+	var investmentAmount float64 = 1000
+	var expectedReturn = 5.5
+	var years float64 = 10
+	
+    var totalAmount = investmentAmount * math.Pow(1+expectedReturn/100, years)
+
+	fmt.Println("Toatal Amount: $", totalAmount)
+}
+
+Alternative Variable Declaration style:
+
+ * instead declaring variable with var, simple you can do this for declaring and Assigning a value.
+
+   Example: amount := 1000 # it will automatically takes it's type based on the value.
+
+ * you can declare multiple values in a single line.
+
+   Example: amount, years := 1000,5  
+
+ * if that variable needs to be a particular type then you can use this.
+
+   Example: amount, years float64 = 1000.0, 5.0 or 1000, 5.5  
+
+ * we can also declare like this, for two different types.
+
+   Example: investmentAmount, years  := 1000, 5.5
+
+
+const variable:
+
+ * it is Immutable Once assigned, the value of a constant cannot be modified.
+
+   Example: const amount = 1000
+
+
+Difference Between var and const:
+
+var:
+
+  * Mutable: A variable declared with var can be changed during the program's execution. You can assign a 
+             new value to it after it is initialized.
+
+  * Memory: Variables are stored in memory and can be modified.
+
+const:
+
+  * Immutable: A constant declared with const is a value that cannot be changed once set. It is fixed at 
+               compile time.
+
+  * Memory: Constants do not occupy memory during execution because their values are directly embedded into
+            the program at compile time. 
+
+
+User Input:
+
+  * reads space-separated input from the user. It takes one or more arguments, which it assigns values to.
+
+    Example:
+
+     var age int  # when taking input from user, we need to explicitly mention the type of variable.
+
+     fmt.Println("Enter age: ")
+     fmt.Scan(&age)  #  here & is used to pass a pointer to the variable
+
+fmt.Scan() Limitations:
+
+  * The fmt.Scan() function is a great function for easily fetching & using user input through the command line.
+
+  * But this function also has an important limitation: You can't (easily) fetch multi-word input values.
+    Fetching text that consists of more than a single word is tricky with this function.
+
+
+Example using above concepts:
+
+package main
+
+import (
+	"fmt"
+	)
+	
+func main() {
+
+	var revenue float64
+	var expenses float64
+	var taxRate float64
+
+	fmt.Println("Enter the revenue:")
+	fmt.Scan(&revenue)
+	fmt.Println("Enter the expenses:")
+	fmt.Scan(&expenses)
+	fmt.Println("Enter the tax rate (as decimal):") 
+	fmt.Scan(&taxRate)
+
+	earningsBeforeTax := revenue - expenses
+	earningsAfterTax := earningsBeforeTax * (1 - taxRate/100)
+
+	fmt.Println("Earnings before tax:", earningsBeforeTax)
+	fmt.Println("Earnings after tax:", earningsAfterTax)
+
+}
+
+we can also output the values using Printf(print format):
+
+  * %v is used to print the text.
+
+  * %.2f is used to print the value to 2 decimal values
+
+package main
+
+import (
+	"fmt"
+	)
+	
+func main() {
+
+	var revenue float64
+	var expenses float64
+	var taxRate float64
+
+	fmt.Println("Enter the revenue:")
+	fmt.Scan(&revenue)
+	fmt.Println("Enter the expenses:")
+	fmt.Scan(&expenses)
+	fmt.Println("Enter the tax rate (as decimal):") 
+	fmt.Scan(&taxRate)
+
+	earningsBeforeTax := revenue - expenses
+	earningsAfterTax := earningsBeforeTax * (1 - taxRate/100)
+
+	// fmt.Printf("Earnings before tax:", earningsBeforeTax)
+	fmt.Printf("Earnings before tax: %v\nEarnings after tax: %v", earningsBeforeTax, earningsAfterTax)
+
+    // if want to print only 2 decimal value.
+    fmt.Printf("Earnings before tax: %.2f\nEarnings after tax: %.2f", earningsBeforeTax, earningsAfterTax)
+
+}
+
+formatted string:
+
+    * fmt.Sprintf is used to format(store) data into a string and return it.
+
+    * It doesn’t print the output but gives you a formatted string that you can use elsewhere.
+
+    Example:
+
+     age := 26
+
+     result := fmt.Sprintf("My age is: %d", age)
+     fmt.Println(result)
+
+     for above example,
+
+     ebt := fmt.Sprintf("Earnings before tax: %.2f",earningsBeforeTax)
+     eat := fmt.Sprintf("Earnings after tax: %.2f",earningsAfterTax)
+
+     fmt.Println(ebt)
+     fmt.Println(eat)
+
+
+Multiline Strings:
+
+  * A raw string literal is enclosed in backticks ( `). It preserves line breaks, special characters, and 
+    whitespace exactly as they appear between the backticks.
+
+  Example:
+
+        str := `This is a 
+        multiline string
+        in Go.
+        No need for escape characters like \n or \t.`
+            
+        fmt.Println(str)
+
+        Output:
+
+        This is a 
+        multiline string
+        in Go.
+        No need for escape characters like \n or \t.
+
+
+Functions:
+
+  * functions are blocks of code that perform a specific task. Functions allow you to organize your code, 
+    make it reusable, and simplify complex programs. A function in Go can take input, perform operations,
+    and return a result.
+
+    syntax: for simple function with parameter
+
+             func outputText(text string) {  # defining function
+                fmt.Println(text)
+             }
+
+             calling a function ->  outputText("hello raju")
+
+
+    syntax: Function with Return Value
+
+             func add(a int, b int) int {
+                return a + b
+             }  
+
+             calling a function ->  result := add(2,3) 
+
+    syntax: Function with Multiple Return Values
+
+             func calculate(a int, b int) (int, int) {   # here (int, int) is function return value type.
+                sum := a + b
+                diff := a - b
+                return sum, diff
+            }
+
+              calling a function ->  sum, diff := calculate(5,3)
+
+
+    syntax: Alternative Function with Multiple Return Values
+
+              func calculate(a int, b int) (sum int, diff int) {   # here (sum int, diff int) is function return value type with this name.
+                sum = a + b
+                diff = a - b
+                return or  return sum, diff
+            }
+
+              calling a function ->  sum, diff := calculate(5,3)
+
+
+Example:
+
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+
+	revenue := userInputText("Enter the revenue:")
+	expenses := userInputText("Enter the expenses:")
+	taxRate := userInputText("Enter the tax rate (as decimal):")
+
+	earningsBeforeTax, earningsAfterTax  := calculateEarnings(revenue, expenses, taxRate)
+
+    fmt.Printf("Earnings before tax: %.2f\nEarnings after tax: %.2f", earningsBeforeTax, earningsAfterTax)
+
+
+}
+
+func calculateEarnings(revenue, expenses, taxRate float64) (float64, float64) {
+	earningsBeforeTax := revenue - expenses
+	earningsAfterTax := earningsBeforeTax * (1 - taxRate/100)
+	return earningsBeforeTax, earningsAfterTax
+}
+
+func userInputText(text string) float64 {
+    var userInput float64
+
+ 	fmt.Println(text)
+	fmt.Scan(&userInput)
+	
+	return userInput
+}
+
+
+Control Statements:
+                   control statements allow you to make decisions or repeat actions
+
+  if:
+     The if statement is used to execute a block of code based on a condition.
+
+  else:
+       You can extend if with an else block to provide an alternative path when the condition is false.
+
+  else if:
+        This allows you to test multiple conditions sequentially.
+
+Example:  
+
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+
+  var accountBalance float64 = 1000.00
+
+  fmt.Println("Welcome to the Bank!")
+  fmt.Println("What do you want to do?")
+  fmt.Println("1. Check balance")
+  fmt.Println("2. Deposit money")
+  fmt.Println("3. Withdraw money")
+  fmt.Println("4. Exit")
+
+  var choice int
+  fmt.Println("Enter your choice:")
+  fmt.Scanln(&choice)
+
+ // wantsCheckBalance := choice == 1
+
+  if choice == 1 {
+  fmt.Println("Your balance is:", accountBalance)
+  } else if choice == 2 {
+	var depositAmount float64
+	fmt.Println("Enter the amount to deposit:")
+	fmt.Scanln(&depositAmount)
+    if depositAmount <= 0 {
+        fmt.Println("Please Deposit amount greater than 0")
+		return
+    }
+	accountBalance += depositAmount
+	fmt.Println("Your updated balance is:", accountBalance)
+} else if choice == 3 {
+	var withdrawAmount float64
+	fmt.Println("Enter the amount to withdraw:")
+	fmt.Scanln(&withdrawAmount)
+    if withdrawAmount <= 0  || withdrawAmount > accountBalance {
+        fmt.Println("Please withdraw amount greater than 0 and less than or equal to your balance")
+		return
+    } else {
+		accountBalance -= withdrawAmount
+		fmt.Println("Your updated balance is:", accountBalance)
+	}
+} else if choice == 4 {
+	fmt.Println("Thank you for using the Bank!")
+} else {
+	fmt.Println("Invalid choice!")
+}
+
+}
+
+
+Loops:
+      The for loop is the only loop in Go
+
+      * Basic for loop:
+        
+        package main
+        import "fmt"
+
+        func main() {
+            for i := 1; i <= 5; i++ {
+                fmt.Println(i)
+            }
+        }
+
+      * infinite loop:
+
+         package main
+
+         import "fmt"
+
+         func main() {
+
+            for {
+                fmt.Println("Welcome to the Bank!")
+            }
+
+         }
+
+break:
+      Used to exit from a for loop or switch statement.  
+
+      syntax: break 
+
+      Example:
+
+      package main
+      import "fmt"
+
+      func main() {
+        for i := 1; i <= 5; i++ {
+            if i == 3 {
+                break // Exits the loop when i equals 3
+            }
+            fmt.Println(i)
+            }
+        }
+
+
+continue:
+         Used to skip the current iteration of the loop and move to the next iteration.
+
+         syntax: continue
+
+         Example:
+
+         package main
+         import "fmt"
+ 
+         func main() {
+             for i := 1; i <= 5; i++ {
+                 if i == 3 {
+                     continue // Skips printing 3
+                 }
+                 fmt.Println(i)
+             }
+         }
+
+
+Example using conditional statements:
+
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+
+  var accountBalance float64 = 1000.00
+
+  fmt.Println("Welcome to the Bank!")
+
+  for {
+
+  fmt.Println("What do you want to do?")
+  fmt.Println("1. Check balance")
+  fmt.Println("2. Deposit money")
+  fmt.Println("3. Withdraw money")
+  fmt.Println("4. Exit")
+
+  var choice int
+  fmt.Println("Enter your choice:")
+  fmt.Scanln(&choice)
+
+ // wantsCheckBalance := choice == 1
+
+  if choice == 1 {
+  fmt.Println("Your balance is:", accountBalance)
+  } else if choice == 2 {
+	var depositAmount float64
+	fmt.Println("Enter the amount to deposit:")
+	fmt.Scanln(&depositAmount)
+    if depositAmount <= 0 {
+        fmt.Println("Please Deposit amount greater than 0")
+		continue
+    }
+	accountBalance += depositAmount
+	fmt.Println("Your updated balance is:", accountBalance)
+} else if choice == 3 {
+	var withdrawAmount float64
+	fmt.Println("Enter the amount to withdraw:")
+	fmt.Scanln(&withdrawAmount)
+    if withdrawAmount <= 0  || withdrawAmount > accountBalance {
+        fmt.Println("Please withdraw amount greater than 0 and less than or equal to your balance")
+		continue
+    } else {
+		accountBalance -= withdrawAmount
+		fmt.Println("Your updated balance is:", accountBalance)
+	}
+} else if choice == 4 {
+	fmt.Println("Thank you for using the Bank!")
+	break
+} else {
+	fmt.Println("Invalid choice!")
+}
+
+}
+
+}
+
+Switch:
+       The switch statement is used to handle multiple possible conditions for a variable. It's an alternative 
+       to using multiple if-else statements.
+
+Example:
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+
+  var accountBalance float64 = 1000.00
+
+  fmt.Println("Welcome to the Bank!")
+
+  for {
+
+  fmt.Println("What do you want to do?")
+  fmt.Println("1. Check balance")
+  fmt.Println("2. Deposit money")
+  fmt.Println("3. Withdraw money")
+  fmt.Println("4. Exit")
+
+  var choice int
+  fmt.Println("Enter your choice:")
+  fmt.Scanln(&choice)
+
+ // wantsCheckBalance := choice == 1
+
+ switch choice {
+	 case 1:
+		fmt.Println("Your balance is:", accountBalance)
+	
+	 case 2:
+		var depositAmount float64
+		fmt.Println("Enter the amount to deposit:")
+		fmt.Scanln(&depositAmount)
+		if depositAmount <= 0 {
+			fmt.Println("Please Deposit amount greater than 0")
+			continue
+		}
+		accountBalance += depositAmount
+		fmt.Println("Your updated balance is:", accountBalance)
+
+	 case 3:
+		var withdrawAmount float64
+		fmt.Println("Enter the amount to withdraw:")
+		fmt.Scanln(&withdrawAmount)
+		if withdrawAmount <= 0  || withdrawAmount > accountBalance {
+			fmt.Println("Please withdraw amount greater than 0 and less than or equal to your balance")
+			continue
+		} else {
+			accountBalance -= withdrawAmount
+			fmt.Println("Your updated balance is:", accountBalance)
+		}
+
+	 case 4:
+		fmt.Println("Thank you for using the Bank!")	
+		return
+	 default:
+		fmt.Println("Invalid choice!")
+
+    }
+  }
+}
+
+
+File Handling:
+
+1. writing to a file:
+   
+     * adding some content to a file
+
+     Example:  # here the balance amount is added to text file
+
+package main
+
+import (
+	"fmt"
+	"os"
+    "strconv"
+)
+
+func writeBalanceToFile(balance float64) {
+	balanceText := fmt.Sprintf("%v",balance)
+	os.WriteFile("balance.txt", []byte(balanceText), 0644)
+}
+
+func readBalanceFromFile() float64 { 
+	data, _ := os.ReadFile("balance.txt")  // here _ is used to ignore the error
+  	balanceText := string(data)
+	balance, _ := strconv.ParseFloat(balanceText, 64)
+	return balance
+}
+
+func main() {
+
+  var accountBalance float64 = readBalanceFromFile()
+
+  fmt.Println("Welcome to the Bank!")
+
+  for {
+
+  fmt.Println("What do you want to do?")
+  fmt.Println("1. Check balance")
+  fmt.Println("2. Deposit money")
+  fmt.Println("3. Withdraw money")
+  fmt.Println("4. Exit")
+
+  var choice int
+  fmt.Println("Enter your choice:")
+  fmt.Scanln(&choice)
+
+ // wantsCheckBalance := choice == 1
+
+ switch choice {
+	 case 1:
+		fmt.Println("Your balance is:", accountBalance)
+	
+	 case 2:
+		var depositAmount float64
+		fmt.Println("Enter the amount to deposit:")
+		fmt.Scanln(&depositAmount)
+		if depositAmount <= 0 {
+			fmt.Println("Please Deposit amount greater than 0")
+			continue
+		}
+		accountBalance += depositAmount
+		fmt.Println("Your updated balance is:", accountBalance)
+		writeBalanceToFile(accountBalance)
+
+	 case 3:
+		var withdrawAmount float64
+		fmt.Println("Enter the amount to withdraw:")
+		fmt.Scanln(&withdrawAmount)
+		if withdrawAmount <= 0  || withdrawAmount > accountBalance {
+			fmt.Println("Please withdraw amount greater than 0 and less than or equal to your balance")
+			continue
+		} else {
+			accountBalance -= withdrawAmount
+			fmt.Println("Your updated balance is:", accountBalance)
+			writeBalanceToFile(accountBalance)
+		}
+
+	 case 4:
+		fmt.Println("Thank you for using the Bank!")	
+		return
+	 default:
+		fmt.Println("Invalid choice!")
+
+    }
+  }
+}
+
+2.reading data from a file:
+
+Example: here amount balancing is reading from a file
+
+import (
+	"fmt"
+	"os"
+	"strconv"
+)
+
+func writeBalanceToFile(balance float64) {
+	balanceText := fmt.Sprintf("%v",balance)
+	os.WriteFile("balance.txt", []byte(balanceText), 0644)
+}
+
+func readBalanceFromFile() float64 { 
+	data, _ := os.ReadFile("balance.txt")  // here _ is used to ignore the error
+  	balanceText := string(data)
+	balance, _ := strconv.ParseFloat(balanceText, 64)
+	return balance
+}
+
+func main() {
+
+  var accountBalance float64 = readBalanceFromFile()
+
+  fmt.Println("Welcome to the Bank!")
+
+  for {
+
+  fmt.Println("What do you want to do?")
+  fmt.Println("1. Check balance")
+  fmt.Println("2. Deposit money")
+  fmt.Println("3. Withdraw money")
+  fmt.Println("4. Exit")
+
+  var choice int
+  fmt.Println("Enter your choice:")
+  fmt.Scanln(&choice)
+
+ // wantsCheckBalance := choice == 1
+
+ switch choice {
+	 case 1:
+		fmt.Println("Your balance is:", accountBalance)
+	
+	 case 2:
+		var depositAmount float64
+		fmt.Println("Enter the amount to deposit:")
+		fmt.Scanln(&depositAmount)
+		if depositAmount <= 0 {
+			fmt.Println("Please Deposit amount greater than 0")
+			continue
+		}
+		accountBalance += depositAmount
+		fmt.Println("Your updated balance is:", accountBalance)
+		writeBalanceToFile(accountBalance)
+
+	 case 3:
+		var withdrawAmount float64
+		fmt.Println("Enter the amount to withdraw:")
+		fmt.Scanln(&withdrawAmount)
+		if withdrawAmount <= 0  || withdrawAmount > accountBalance {
+			fmt.Println("Please withdraw amount greater than 0 and less than or equal to your balance")
+			continue
+		} else {
+			accountBalance -= withdrawAmount
+			fmt.Println("Your updated balance is:", accountBalance)
+			writeBalanceToFile(accountBalance)
+		}
+
+	 case 4:
+		fmt.Println("Thank you for using the Bank!")	
+		return
+	 default:
+		fmt.Println("Invalid choice!")
+
+    }
+  }
+}
+
+3.Handling errors:
+
+    * Handling errors in file handling like if there is no file exists then it throw error that we need catch.
+
+    * here we are using bulit-in error using if err != nil and also we are using custom errors using errors.new()
+
+    * here we are checking, if the balance is file not present then we are adding some balance to a file and also
+      throwing error message.
+
+Example:
+
+package main
+
+import (
+	"errors"
+	"fmt"
+	"os"
+	"strconv"
+)
+
+func writeBalanceToFile(balance float64) {
+	balanceText := fmt.Sprintf("%v", balance)
+	os.WriteFile("balance.txt", []byte(balanceText), 0644)
+}
+
+func readBalanceFromFile() (float64, error) {
+	data, err := os.ReadFile("balance.txt") // here _ is used to ignore the error
+
+	if err != nil {
+		return 1000, errors.New("file not found, creating a new file with default balance of 1000")
+	}
+	balanceText := string(data) // convert byte array to string
+	balance, err := strconv.ParseFloat(balanceText, 64)
+
+	if err != nil {
+		return 1000, errors.New("error parsing balance from file")
+	}
+
+	return balance, nil // here nil is used to indicate that there is no error
+}
+
+func main() {
+
+	var accountBalance, err = readBalanceFromFile()
+
+	if err != nil {
+		fmt.Println("ERROR:", err)
+		fmt.Println("Creating a new file with default balance of 1000")
+        fmt.println("#######################################################")
+	}
+
+	fmt.Println("Welcome to the Bank!")
+
+	for {
+
+		fmt.Println("What do you want to do?")
+		fmt.Println("1. Check balance")
+		fmt.Println("2. Deposit money")
+		fmt.Println("3. Withdraw money")
+		fmt.Println("4. Exit")
+
+		var choice int
+		fmt.Println("Enter your choice:")
+		fmt.Scanln(&choice)
+
+		// wantsCheckBalance := choice == 1
+
+		switch choice {
+		case 1:
+			fmt.Println("Your balance is:", accountBalance)
+
+		case 2:
+			var depositAmount float64
+			fmt.Println("Enter the amount to deposit:")
+			fmt.Scanln(&depositAmount)
+			if depositAmount <= 0 {
+				fmt.Println("Please Deposit amount greater than 0")
+				continue
+			}
+			accountBalance += depositAmount
+			fmt.Println("Your updated balance is:", accountBalance)
+			writeBalanceToFile(accountBalance)
+
+		case 3:
+			var withdrawAmount float64
+			fmt.Println("Enter the amount to withdraw:")
+			fmt.Scanln(&withdrawAmount)
+			if withdrawAmount <= 0 || withdrawAmount > accountBalance {
+				fmt.Println("Please withdraw amount greater than 0 and less than or equal to your balance")
+				continue
+			} else {
+				accountBalance -= withdrawAmount
+				fmt.Println("Your updated balance is:", accountBalance)
+				writeBalanceToFile(accountBalance)
+			}
+
+		case 4:
+			fmt.Println("Thank you for using the Bank!")
+			return
+		default:
+			fmt.Println("Invalid choice!")
+
+		}
+	}
+}
+
+
+* here if you want to exit the application when file is not present then use return.
+
+if err != nil {
+		fmt.Println("ERROR:", err)
+		fmt.Println("Creating a new file with default balance of 1000")
+        fmt.println("#######################################################")
+        return
+	}
+
+* there is another way to exit the application when file is not present use panic instead of return    
+
+if err != nil {
+		fmt.Println("ERROR:", err)
+		fmt.Println("Creating a new file with default balance of 1000")
+        fmt.println("#######################################################")
+        panic("existing the application")
+	}
+
+Example:
+ 
+   * validate userinput and throw error when userinput to 0 and less than 0.
+   * write the result to file.
+
+package main
+
+import (
+	"fmt"
+	"os"
+	"errors"
+)
+
+func calculateEarnings(revenue, expenses, taxRate float64) (float64, float64) {
+	earningsBeforeTax := revenue - expenses
+	earningsAfterTax := earningsBeforeTax * (1 - taxRate/100)
+	return earningsBeforeTax, earningsAfterTax
+}
+
+func userInputText(text string) (float64,error) {
+    var userInput float64
+
+ 	fmt.Println(text)
+	fmt.Scan(&userInput)
+
+	if userInput <= 0 {
+		return 0, errors.New("input must be greater than zero")
+	}
+	
+	return userInput, nil
+}
+
+func writingEBTTOFile(earningsBeforeTax, earningsAfterTax float64) {
+	data := fmt.Sprintf("Earnings Before Tax: %.2f\nEarnings After Tax: %.2f\n", earningsBeforeTax, earningsAfterTax)
+	err := os.WriteFile("balance.txt", []byte(data), 0644)
+	if err != nil {
+		fmt.Println("Error writing to file:", err)
+		return
+	}
+}
+
+func main() {
+
+	revenue, err1 := userInputText("Enter the revenue:")
+
+	// if err != nil {
+	// 	fmt.Println("Error:", err)
+	// 	return
+	// }
+	expenses, err2 := userInputText("Enter the expenses:")
+
+	// if err != nil {
+	// 	fmt.Println("Error:", err)
+	// 	return
+	// }
+	taxRate, err3 := userInputText("Enter the tax rate (as decimal):")
+
+	if err1 != nil || err2 != nil || err3 != nil{
+		fmt.Println("Error:", err1)
+		return
+	}
+
+
+	earningsBeforeTax, earningsAfterTax := calculateEarnings(revenue, expenses, taxRate)
+	writingEBTTOFile(earningsBeforeTax, earningsAfterTax)
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+                       
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                      
+
+
+
+
+
+
+
+
