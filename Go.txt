@@ -1043,6 +1043,530 @@ func main() {
 }
 
 
+Packages:
+		 Things to keep in mind while working with packages.
+
+		 * go mod tidy: This command cleans up your go.mod and go.sum files by removing unnecessary dependencies
+		 			    and adding any that are missing.
+
+		 * go get: Use go get to add new dependencies to your project. For example, 
+		 		   go get github.com/gin-gonic/gin will add the Gin web framework.
+
+		 * Go package names should be in lowercase and, if necessary, split into multiple words using
+		   underscores (_) or camel case.
+
+		 * Exported Names: In Go, any identifier that starts with an uppercase letter is exported and can be 
+		 				   accessed from other packages. If it's lowercase, it's unexported and private to the
+						   package.		
+
+		 * Use Unexported Fields and Methods: If a field or method is not intended to be accessed outside the
+		 									  package, it should be unexported (start with a lowercase letter).
+
+		 * if you want to import third party packages into the application then 
+
+		       -> first use: go get package-name i.e it will download that package and made available in the application.
+			                 also add this dependency in go.mod file.
+
+			   -> import in the code and use it.
+
+
+
+Pointers:
+          variables that stores the value addresses instead of value.
+
+		  * in pointers, you can not perform calculate operations. if you want to perform then you need to use
+		    Dereferencing(using *)
+
+		  Example:
+
+		  age := 20  then in the computer memory 20 is stored and assigned with some addess(g578dhuid)
+		  and then if you want to get that value, you need to use this. getData := &age.
+		  here getData contains the value address(g578dhuid) not the value. This is called pointers.
+
+		  * Imagine a pointer as a street address. The street address points to where a house (or data) is
+		    located, but it doesn’t hold the actual house (or data) itself.
+
+		  * In Go, variables usually hold data like numbers or strings. But sometimes, you might want to work
+		    with the address of that data, instead of the data itself. This is where pointers come in.
+
+
+Advantage of using Pointers:
+
+  * Avoid unnecessary value copies: By default, Go creates a copy when passing values to a functions.
+    with pointers, only one value is stored in memory(and the address is passed around).
+
+	  Example:
+	            package main
+
+				import "fmt"
+
+				func main() {
+
+					age := 26
+
+					fmt.Println("Age is", age)
+
+					adultYears = getAdultYears(age)
+					fmt.Println(adultYears)
+
+				}
+
+				func getAdultYears(age int) int {
+					return age - 18
+				}
+
+				Here the age is used multiple times then it creates the multiple copies of it. value address
+				of variable age is different to the getAdultYears age. The memory address of age is different
+				but value is same.
+
+
+This can be overcome using pointers:
+
+Using '&', we can store the address ov value in a variable without making copy of it.
+and using '*', we can get the actual value of the variable.
+
+Example:
+
+package main
+
+import "fmt"
+
+func main() {
+
+	age := 26
+
+	newAge := &age
+
+	fmt.Println("Age:", newAge)  # here we will get the memory address of the variable age
+}
+
+
+package main
+
+import "fmt"
+
+func main() {
+
+	age := 26
+
+	newAge := &age
+
+	fmt.Println("Age:", *newAge)  # here we will get the actual value of the variable age. This is called Dereferencing
+}
+
+
+A Pointer's Null Value:
+
+   * All values in Go have a so-called "Null Value" - i.e., the value that's set as a default if no value is
+     assigned to a variable.
+
+   * For example, the null value of an int variable is 0. Of a float64, it would be 0.0. Of a string, it's "".
+
+   * For a pointer, it's nil - a special value built-into Go.
+
+   * nil represents the absence of an address value - i.e., a pointer pointing at no address / no value in memory.
+
+
+
+
+Struct datatype:
+
+	* a struct is a custom data type that allows you to group together different types of variables (fields) 
+	  under a single name.
+
+problems without structs:
+
+	* Managing related data in Go becomes messy and error-prone, requiring multiple individual variables for 
+	  each piece of data. This leads to increased risk of mistakes, poor organization, and difficulty in 
+	  scaling. Structs group related data together, making code cleaner, easier to maintain, and 
+	  less error-prone.
+
+Example:
+
+package main
+
+import "fmt"
+
+func main() {
+
+	firstName := getUserData("Enter your first name:")
+	lastName := getUserData("Enter your last name:")
+	dateOfBirth := getUserData("Enter your date of birth:")
+
+	outputUserData(firstName, lastName, dateOfBirth)
+
+}
+
+func outputUserData(firstName, lastName, dateOfBirth string) {
+	fmt.Println(firstName, lastName, dateOfBirth)
+}
+
+func getUserData(value string) string {
+
+	var userData string
+
+	fmt.Println(value)
+	fmt.Scanln(&userData)
+
+	return userData
+}
+
+
+using structs:
+
+package main
+
+import "fmt"
+
+func main() {
+
+	firstName := getUserData("Enter your first name:")
+	lastName := getUserData("Enter your last name:")
+	dateOfBirth := getUserData("Enter your date of birth:")
+
+	appUser := User{   // struct literal notation 
+		firstName: firstName,
+		lastName: lastName,
+		dateOfBirth: dateOfBirth,
+	}
+
+	// appUser := User{   // alternative to above, but be careful with the order of the fields 
+	// 	 firstName,
+	//      lastName,
+	//      dateOfBirth,
+	// }
+
+	outputUserData(appUser)
+
+	
+}
+
+type User struct {  // creating a struct
+	firstName string
+	lastName  string
+	dateOfBirth string
+}
+
+	func outputUserData(user User) {
+	fmt.Println(user.firstName, user.lastName, user.dateOfBirth)
+}
+
+func getUserData(value string) string {
+    
+	var userData string
+    fmt.Println(value)
+	fmt.Scanln(&userData)
+  return userData
+}
+
+
+Methods:
+
+	* methods are functions that are associated with a specific type, like a struct. You define a method by 
+	  specifying a receiver (the type the method is associated with) before the function name.
+
+	  syntax:
+	  func (receiver type) methodName(parameters) returnType {  # here receiver(some name) type(struct)
+         // Method body
+      }
+
+Example:
+
+package main
+
+import "fmt"
+
+func main() {
+
+	firstName := getUserData("Enter your first name:")
+	lastName := getUserData("Enter your last name:")
+	dateOfBirth := getUserData("Enter your date of birth:")
+
+	appUser := User{   // struct literal notation 
+		firstName: firstName,
+		lastName: lastName,
+		dateOfBirth: dateOfBirth,
+	}
+
+	appUser.outputUserData() // calling the method of the struct
+
+	
+}
+
+type User struct {  // creating a struct
+	firstName string
+	lastName  string
+	dateOfBirth string
+}
+
+func (user User) outputUserData() {   // method of the struct
+   fmt.Println(user.firstName, user.lastName, user.dateOfBirth)
+}
+
+func getUserData(value string) string {
+    
+	var userData string
+    fmt.Println(value)
+	fmt.Scanln(&userData)
+  return userData
+}	
+
+
+constructor in functions:
+
+	* constructor function helps in creating a new instance of a struct and setting up its fields in a 
+	  controlled way, ensuring that the struct is initialized correctly.
+
+Example:
+
+package main
+
+import "fmt"
+
+func main() {
+
+	firstName := getUserData("Enter your first name:")
+	lastName := getUserData("Enter your last name:")
+	dateOfBirth := getUserData("Enter your date of birth:")
+
+	appUser := newUser(firstName, lastName, dateOfBirth) // calling the constructo
+
+	appUser.outputUserData() // calling the method of the struct
+
+	
+}
+
+func newUser(firstName, lastName, dateOfBirth string) User { // constructor
+	return User{
+		firstName: firstName,
+		lastName: lastName,
+		dateOfBirth: dateOfBirth,
+	}
+}
+
+type User struct {  // creating a struct
+	firstName string
+	lastName  string
+	dateOfBirth string
+}
+
+func (user User) outputUserData() {   // method of the struct
+   fmt.Println(user.firstName, user.lastName, user.dateOfBirth)
+}
+
+func getUserData(value string) string {
+    
+	var userData string
+    fmt.Println(value)
+	fmt.Scanln(&userData)
+  return userData
+}
+
+
+using constructor function for validation:
+
+here it will validate the fields, if the fields are empty then it should throw the error.
+
+Example:
+
+package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+func main() {
+
+	firstName := getUserData("Enter your first name:")
+	lastName := getUserData("Enter your last name:")
+	dateOfBirth := getUserData("Enter your date of birth:")
+
+	appUser, err := newUser(firstName, lastName, dateOfBirth) // calling the constructo
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	appUser.outputUserData() // calling the method of the struct
+
+}
+
+func newUser(firstName, lastName, dateOfBirth string) (User, error) { // constructor
+	if firstName == "" || lastName == "" || dateOfBirth == "" {
+		return User{}, errors.New("first name, last name and date of birth are required")
+	}
+	return User{
+		firstName:   firstName,
+		lastName:    lastName,
+		dateOfBirth: dateOfBirth,
+	}, nil
+}
+
+type User struct { // creating a struct
+	firstName   string
+	lastName    string
+	dateOfBirth string
+}
+
+func (user User) outputUserData() { // method of the struct
+	fmt.Println(user.firstName, user.lastName, user.dateOfBirth)
+}
+
+func getUserData(value string) string {
+
+	var userData string
+	fmt.Println(value)
+	fmt.Scanln(&userData)
+	return userData
+}
+
+
+NOTE:
+
+	* while exporting functions, methods and variables inorder to access these then these names should 
+	  starts with Uppercase only. if you use lowercase then those are not exported. they can only 
+	  access in the same package.
+
+
+Struct Embeddding:
+
+	* struct embedding allows one struct to "embed" another struct, essentially allowing a struct to inherit 
+	  the fields and methods of another. This is a way to achieve composition instead of inheritance 
+	  (which Go doesn't have). It's a powerful feature because it enables you to reuse and extend existing
+	   structs without having to explicitly define everything in the new struct.
+
+Example:
+
+package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+func main() {
+
+	firstName := getUserData("Enter your first name:")
+	lastName := getUserData("Enter your last name:")
+	dateOfBirth := getUserData("Enter your date of birth:")
+	email := getUserData("Enter your email:")
+	address := getUserData("Enter your address:")
+
+	appUser, err := NewAdmin(email, address, firstName, lastName, dateOfBirth) // calling the constructor
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	appUser.outputUserData() // calling the method of the struct
+
+}
+
+func NewUser(firstName, lastName, dateOfBirth string) (User, error) { // constructor
+	if firstName == "" || lastName == "" || dateOfBirth == "" {
+		return User{}, errors.New("first name, last name and date of birth are required")
+	}
+	return User{
+		firstName:   firstName,
+		lastName:    lastName,
+		dateOfBirth: dateOfBirth,
+	}, nil
+}
+
+func NewAdmin(email, address, firstName, lastName, dateOfBirth string) (Admin, error) { // constructor
+	if email == "" || address == "" {
+		return Admin{}, errors.New("email and address are required")
+	}
+	return Admin{
+		email:   email,
+		address: address,
+		User: User{
+			firstName:   firstName,
+			lastName:    lastName,
+			dateOfBirth: dateOfBirth,
+		},
+	}, nil
+}
+
+type User struct { // creating a struct
+	firstName   string
+	lastName    string
+	dateOfBirth string
+}
+
+type Admin struct {
+	email   string
+	address string
+	User
+}
+
+func (user User) outputUserData() { // method of the struct
+	fmt.Println(user.firstName, user.lastName, user.dateOfBirth)
+}
+
+func getUserData(value string) string {
+
+	var userData string
+	fmt.Println(value)
+	fmt.Scanln(&userData)
+	return userData
+}
+
+
+NOTE:
+
+  * using Scan, we cannot give long text as input.
+  * this can overcome using bufio 
+
+Example:
+
+func getUserInput(prompt string) string {
+	
+	fmt.Println(prompt)
+	
+	reader := bufio.NewReader(os.Stdin) // Create a new reader
+	text, err := reader.ReadString('\n') // Read user input until newline
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return ""
+	}
+
+	text = strings.TrimSuffix(text,"\n") // Remove any leading/trailing whitespace
+	text = strings.TrimSuffix(text,"\r") // Remove any leading/trailing whitespace
+
+
+	return text
+}
+
+Struct Tags:
+
+	* struct tags are special annotations that can be added to the fields of a struct to provide additional 
+	  information. They are commonly used to define metadata for things like JSON serialization, database
+	  interactions, or validation.
+
+Example:
+
+type Note struct {
+	Title     string `json:"title"`
+	Content   string  `json:"content"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+
+
+
+
+
+
+
+
+						      
+
+
 
 
 
