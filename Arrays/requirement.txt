@@ -1,0 +1,11 @@
+1. create a new array that contains three hobbies and print them in output.
+2. also output more data about that array:
+    * the first element
+    * the second and third element combined in a new list.
+3. create the new slice based on the first element that contains first and second elements.
+4. create the above slice in two different ways
+5. re-slice the slice from (3 point) and change it to contain the second and the last element of the original array.
+6. create the dynamic array that contains the course goals(atleast 2)
+7. set the 2nd goal to different one and then add third goal to it.
+8. create a product struct with title, id, price. create a dynamic list of products(atleast 2) and then
+   add a new product to the existing list of products.    
