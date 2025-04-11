@@ -412,6 +412,143 @@ func userInputText(text string) float64 {
 	return userInput
 }
 
+Anonymous functions:
+
+	* anonymous functions are functions defined without a name. They are useful when you want to define a 
+	  function inline, especially for short operations like goroutines, callbacks, or closures.
+
+	  syntax: func() {
+				fmt.Println("Hello from an anonymous function!")
+			}
+
+	  Assign anonymous function to a variable:
+
+	    package main
+
+		import (
+			"fmt"
+		)
+
+		func main() {
+
+			greet := func(name string) {
+				fmt.Println("Hello", name)
+			}
+			// Call the function using the variable
+			greet("raju")
+		}	
+
+
+Recursion:
+           calling the function again and again.
+
+Example: factorial of a number without recursion.
+
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+
+	result := factorial(6)
+
+	fmt.Println(result)
+}
+
+func factorial(num int) int {
+	result := 1
+
+	for i := 1; i <= num; i++ {
+		result = result * i
+	}
+	return result
+}
+
+
+using recursion:
+
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+
+	result := factorial(6)
+
+	fmt.Println(result)
+}
+
+func factorial(num int) int {
+	if num == 0 {
+		return 1   # when num is 0 then it will stop execution, if you don't provide this condition then it will go into infinite loop
+	}
+	return num * factorial(num - 1)  # here calling the function again and again. 
+}
+
+
+Variadic Function:
+				  A variadic function is a function that can take a variable number of arguments of the same type.
+				  Super handy when you don’t know exactly how many inputs you’ll need ahead of time.
+
+				  syntax: ...type i.e ...int
+
+Example: here you can pass any number of values, it will return sum of their values.
+
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+
+	result := sumOfNumbers(1,2,3,4,5,6,7,8)
+
+	fmt.Println(result)
+}
+
+func sumOfNumbers(num ...int) int {
+	sum := 0
+
+	for _, val := range num {
+		sum += val
+	}
+	return sum
+}
+
+
+if you want to pass array or slices to variadic then use this,
+
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+
+	numbers := []int{1,2,3,4,5,6,7,8}
+
+	result := sumOfNumbers(numbers...) # here it will extract one one value from numbers
+
+	fmt.Println(result)
+}
+
+func sumOfNumbers(num ...int) int {
+	sum := 0
+
+	for _, val := range num {
+		sum += val
+	}
+	return sum
+}
+
+
+
 
 Control Statements:
                    control statements allow you to make decisions or repeat actions
@@ -1041,6 +1178,36 @@ func main() {
 	writingEBTTOFile(earningsBeforeTax, earningsAfterTax)
 
 }
+
+
+4. reading strings from a file:
+
+Example:
+
+func readDataFromFile() ([]string, error) {
+	file, err := os.Open("prices.txt")
+
+	if err != nil {
+		return nil, errors.New("could not open file")
+	}
+
+	scanner := bufio.NewScanner(file)
+
+	var lines []string
+
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+
+	err = scanner.Err()
+
+	if err != nil {
+		file.Close()
+		return nil, errors.New("reading content from file failed")
+	}
+ return lines, nil
+}
+
 
 
 Packages:
@@ -1760,7 +1927,7 @@ difference between maps and structs:
 
 make function:
 
-	* he make function is used to create and initialize built-in data structures such as slices, maps, and
+	* The make function is used to create and initialize built-in data structures such as slices, maps, and
 	  channels. The make function allocates memory and returns a reference to the data structure.
 
 	  syntax: make(Type, length, capacity)  // here length is the number of elements and capacity is the maximum number of elements that can be stored in the slice without allocation new memory
@@ -1872,178 +2039,175 @@ func main() {
 
 
 
+Concurrency:
+	    Concurrency means your program can do multiple things at the same time  i.e for running tasks parallely.
+
+Goroutines:
+            * Goroutines are Go's way of running functions concurrently (at the same time or overlapping time).
+              You just add the go keyword before a function call, and Go takes care of the rest.
+
+            * A goroutine is like a small worker that runs a function in the background.
+
+		    * Add go before a function to run it at the same time as other code.
+
+			* They’re super light—Go can run thousands of them
+
+            Example:   here it will not present output to the console
+
+			package main
+
+			import (
+				"fmt"
+			)
+
+			func main() {
+
+			go greet("raju")
+			go greet2("sandy")
+
+			}
+
+			func greet(str string) {
+				fmt.Println("Hello", str)
+			}
+
+			func greet2(str string) {
+				fmt.Println("Hi", str)
+			}
+
+
+Channel:
+        A channel is a way for goroutines to communicate with each other — like a pipe where one goroutine
+		can send data and another can receive it. i.e Communicate between goroutines
+
+		syntax: done(variable_name) := make(chan type)  # type is int,float64, string, struct etc.
+
+		Example:
+		         * One writes a message and puts it in a mailbox 
+				 * The other reads that message from the mailbox 
+
+				 That mailbox is the channel.
+
+
+Example: here it will print output to the console.
+
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+
+	done := make(chan bool)
+	go greet("raju", done)
+	go greet2("sandy", done)
+
+	<- done
+
+}
+
+func greet(str string, doneChan chan bool) {
+	fmt.Println("Hello", str)
+	doneChan <- true  # sending data to it.
+}
+
+func greet2(str string, doneChan chan bool) {
+	fmt.Println("Hi", str)
+	doneChan <- true   # sending data to it.
+}
+
+* here we are sending multiple data through one channel. we can also send one data to one channel that is also possible.
+
+* when sending multiple data to the one channel, here we are receiving odd data like sometimes we will get all time and 
+  sometimes we will get only one data. here data is inconsistent because if one data is received then it is printing 
+  data to the console. 
+
+* if you don't want that, you can call this "<- done", how many times that all data is present. in above example
+  we are using two function then call this 2 times. you will get all the data.
+
+* here we are calling this <- done multiple times, which is not good because in future if you added new function
+  then again we need to call it. alternatively we can use for loop for it.
+
+ Example:
+
+ package main
+
+import (
+	"fmt"
+)
+
+func main() {
+
+	done := make(chan bool)
+	go greet("raju", done)
+	go greet2("sandy", done)
+
+	for range done {
 		
+	}
 
+}
 
+func greet(str string, doneChan chan bool) {
+	fmt.Println("Hello", str)
+	doneChan <- true
+}
 
+func greet2(str string, doneChan chan bool) {
+	fmt.Println("Hi", str)
+	doneChan <- true
+}  
 
+* it will print all the values but after printing the values we will also get error stated below because for loop
+  don't know when to stop the loop.
 
+error:
+Hi sandy
+Hello raju
+fatal error: all goroutines are asleep - deadlock!
 
+goroutine 1 [chan receive]:
+main.main()
+        /Users/sriraju/Desktop/ansible/GO_Practice/app.go:13 +0xc0
+exit status 2
 
+* to overcome this error, we need to close the channel in the function after the data is sent.
 
+Example:
 
+package main
 
+import (
+	"fmt"
+)
 
+func main() {
 
+	done := make(chan bool)
+	go greet("raju", done)
+	go greet2("sandy", done)
 
+	for range done {
 
+	}
 
-						      
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-                       
+func greet(str string, doneChan chan bool) {
+	fmt.Println("Hello", str)
+	doneChan <- true
 	
+}
+
+func greet2(str string, doneChan chan bool) {
+	fmt.Println("Hi", str)
+	doneChan <- true
+	close(doneChan)
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                      
-
-
-
-
-
-
-
-
+NOTE:
+while writing the file handling, when you open the file then you need to close that file. for that we need to
+close the file when there is an error and also we need to close the file when job is done. here we need to
+close the file 2 times. instead of that we can use defer file.Close() once.                                                                      
