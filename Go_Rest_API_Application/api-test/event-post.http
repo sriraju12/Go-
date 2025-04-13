@@ -1,0 +1,10 @@
+POST http://localhost:8080/events
+Content-Type: application/json
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwiZXhwIjoxNzQ0NTMzMDk4LCJ1c2VySWQiOjF9.dvXtierlGOHJd-w26ODVi3un4i-MEKnfTKWOfcnToKc 
+
+{
+    "name": "house opening event",
+    "description": "house opening event",
+    "location": "anantapur",
+    "datetime": "2025-04-11T17:41:00Z"
+}
