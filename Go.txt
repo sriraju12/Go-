@@ -20,7 +20,7 @@ func main() {
 }
 
   NOTE:
-  you can not use single for print the values in fmt. use only double quotes or back ticks(`)
+  you can not use single quotes for print the values in fmt. use only double quotes or back ticks(`)
 
   Module:
   A module is essentially a collection of Go packages that are versioned together.
