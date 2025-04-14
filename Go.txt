@@ -1289,7 +1289,7 @@ Advantage of using Pointers:
 
 This can be overcome using pointers:
 
-Using '&', we can store the address ov value in a variable without making copy of it.
+Using '&', we can store the address or value in a variable without making copy of it.
 and using '*', we can get the actual value of the variable.
 
 Example:
