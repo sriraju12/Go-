@@ -2234,3 +2234,52 @@ Prepare() prepares a SQL statement - this can lead to better performance if the 
 This is only true, if the prepared statement is not closed (stmt.Close()) in between those executions. In that case, there wouldn't be any advantages.
 
 And, indeed, in this application, we are calling stmt.Close() directly after calling stmt.Exec(). So here, it really wouldn't matter which approach you're using.
+
+
+* sorting of arrays or slices can be done using slices package.
+
+  Example:
+
+package main
+
+import (
+	"fmt"
+	"slices"
+)
+
+func main() {
+	strs := []string{"raju", "abc", "sandy"}
+	ints := []int{3, 1, 5, 2}
+
+	slices.Sort(strs)
+
+	fmt.Println(strs)
+
+	slices.Sort(ints)
+
+	fmt.Println(ints)
+}
+
+* we can also sort the elements based on the length.
+
+Example:
+
+package main
+
+import (
+	"cmp"
+	"fmt"
+	"slices"
+)
+
+func main() {
+	fruits := []string{"peach", "banana", "kiwi"}
+
+	lenCmp := func(a, b string) int {
+		return cmp.Compare(len(a), len(b))
+	}
+
+	slices.SortFunc(fruits, lenCmp)
+	fmt.Println(fruits)
+
+}
