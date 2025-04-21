@@ -2206,6 +2206,257 @@ func greet2(str string, doneChan chan bool) {
 	close(doneChan)
 }
 
+Buffered channel:
+a buffered channel is a type of channel that has a capacity and can hold a limited number of values before it blocks.
+This means you can send values into the channel without an immediate corresponding receive—up to its capacity.
+
+Example: ch := make(chan int, 3) // a buffered channel with capacity 3
+
+* You can send up to 3 items into ch without blocking.
+
+* Once it holds 3 items, any further ch <- value operation will block until a value is received from the channel
+
+* By default channels are unbuffered
+
+* Every send (ch <- value) will block until another goroutine receives from that channel (<-ch).
+
+* Likewise, every receive blocks until there’s something to receive.
+
+Example:
+
+package main
+
+import "fmt"
+
+func main() {
+
+	// Here we `make` a channel of strings buffering up to
+	// 2 values.
+	messages := make(chan string, 2)
+
+	// Because this channel is buffered, we can send these
+	// values into the channel without a corresponding
+	// concurrent receive.
+	messages <- "buffered"
+	messages <- "channel"
+
+	// Later we can receive these two values as usual.
+	fmt.Println(<-messages)
+	fmt.Println(<-messages)
+
+Select:
+* It’s like a switch statement for channels, letting you wait on multiple communication operations at once.
+
+* select allows a goroutine to wait on multiple channel operations (sends or receives). It executes one of the
+  ready cases at random if multiple are ready.
+
+Example:
+
+package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func main() {
+    ch1 := make(chan string)
+    ch2 := make(chan string)
+
+    go func() {
+        time.Sleep(1 * time.Second)
+        ch1 <- "from ch1"
+    }()
+
+    go func() {
+        time.Sleep(2 * time.Second)
+        ch2 <- "from ch2"
+    }()
+
+    select {
+    case msg1 := <-ch1:
+        fmt.Println(msg1)
+    case msg2 := <-ch2:
+        fmt.Println(msg2)
+    }
+}
+
+* Whichever channel is ready first gets selected. Here, ch1 will likely print first because it has the shorter sleep.
+
+* Only one case is executed — even if multiple are ready.
+
+* If none are ready, select will block — unless you have a default case.
+
+* Great for timeouts, non-blocking operations, and fan-in patterns.
+
+Non-Blocking Channel Operations:
+* non-blocking channel operations in Go — super handy when you want to try a send or receive without getting stuck (blocked)
+  if the channel isn’t ready.
+
+* You can use the select statement with a default case. If none of the channels are ready, the default is chosen immediately
+  so it never blocks.
+
+ Non-blocking Receive:
+
+select {
+case msg := <-ch:
+    fmt.Println("Received:", msg)
+default:
+    fmt.Println("No message received")
+}
+
+* Receive msg if something is available on ch
+
+* Otherwise, immediately print “No message received”
+
+Non-blocking Send:
+
+select {
+case ch <- "hello":
+    fmt.Println("Sent message")
+default:
+    fmt.Println("Channel is full, didn’t send")
+}
+
+* Sends "hello" only if ch is ready to receive
+
+* Otherwise, falls back to default
+
+whole Example:
+
+func main() {
+    ch := make(chan string, 1)
+
+    // Try to send
+    select {
+    case ch <- "data":
+        fmt.Println("Sent")
+    default:
+        fmt.Println("Send failed")
+    }
+
+    // Try to receive
+    select {
+    case msg := <-ch:
+        fmt.Println("Received:", msg)
+    default:
+        fmt.Println("Receive failed")
+    }
+}
+
+Closing Channel:
+* No more values will be sent on this channel. Receivers can still receive remaining buffered values,
+  but once the buffer is empty.
+
+* Receiving gives the zero value of the type
+
+* And you can check that the channel is closed using the second return value (opposite value)
+
+syntax: close(ch)
+
+Example:
+
+ch := make(chan int, 2)
+ch <- 42
+close(ch)
+
+value, ok := <-ch
+fmt.Println(value, ok) // 42 true
+
+value, ok = <-ch
+fmt.Println(value, ok) // 0 false — channel is closed and empty
+
+* ok == false → channel is closed and empty
+
+Timers:
+* A time.Timer represents a single event in the future — it waits for a duration, then sends the
+  current time on its channel.
+
+Example:
+
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+
+	// Timers represent a single event in the future. You
+	// tell the timer how long you want to wait, and it
+	// provides a channel that will be notified at that
+	// time. This timer will wait 2 seconds.
+	timer1 := time.NewTimer(2 * time.Second)
+
+	// The `<-timer1.C` blocks on the timer's channel `C`
+	// until it sends a value indicating that the timer
+	// fired.
+	<-timer1.C
+	fmt.Println("Timer 1 fired")
+
+	// If you just wanted to wait, you could have used
+	// `time.Sleep`. One reason a timer may be useful is
+	// that you can cancel the timer before it fires.
+	// Here's an example of that.
+	timer2 := time.NewTimer(time.Second)
+	go func() {
+		<-timer2.C
+		fmt.Println("Timer 2 fired")
+	}()
+	stop2 := timer2.Stop()
+	if stop2 {
+		fmt.Println("Timer 2 stopped")
+	}
+
+	// Give the `timer2` enough time to fire, if it ever
+	// was going to, to show it is in fact stopped.
+	time.Sleep(2 * time.Second)
+}
+
+Tickers:
+* Timers are for when you want to do something once in the future - tickers are for when you want to
+  do something repeatedly at regular intervals.
+
+Example:
+
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+
+	// Tickers use a similar mechanism to timers: a
+	// channel that is sent values. Here we'll use the
+	// `select` builtin on the channel to await the
+	// values as they arrive every 500ms.
+	ticker := time.NewTicker(500 * time.Millisecond)
+	done := make(chan bool)
+
+	go func() {
+		for {
+			select {
+			case <-done:
+				return
+			case t := <-ticker.C:
+				fmt.Println("Tick at", t)
+			}
+		}
+	}()
+
+	// Tickers can be stopped like timers. Once a ticker
+	// is stopped it won't receive any more values on its
+	// channel. We'll stop ours after 1600ms.
+	time.Sleep(1600 * time.Millisecond)
+	ticker.Stop()
+	done <- true
+	fmt.Println("Ticker stopped")
+}
+
+
 
 NOTE:
 while writing the file handling, when you open the file then you need to close that file. for that we need to
@@ -2283,3 +2534,4 @@ func main() {
 	fmt.Println(fruits)
 
 }
+
