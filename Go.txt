@@ -436,7 +436,30 @@ Anonymous functions:
 			}
 			// Call the function using the variable
 			greet("raju")
-		}	
+		}
+
+Immediately invoked anonymous function:
+					An Immediately Invoked Anonymous Function (also called an 
+IIFE — Immediately Invoked Function Expression) is a function that is:
+
+* Anonymous – it has no name.
+
+* Defined and called at the same time – right where it’s written.
+
+Example:
+
+package main
+
+import "fmt"
+
+func main() {
+	result := func(name string) string {
+		return "Hello, " + name
+	}("sriraju")  // it will immediately invoke this function using this value
+
+	fmt.Println(result) // Output: Hello, sriraju
+}
+
 
 
 Recursion:
